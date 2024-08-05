@@ -98,7 +98,9 @@ resource "google_compute_firewall" "sync_firewall" {
 
 
 ### Cloud Nat ###
-# Allows for egress traffic on Protected Subnet
+# Allows for egress traffic on Protected Subnet 
+# NOTE: uncomment this section and remove custom route "default-via-fgts" to enable direct uninspected outbound connections to Internet 
+/*
 resource "google_compute_router_nat" "cloud_nat" {
   name                               = "${var.cluster_name}-cloud-nat-${random_string.random_name_post.result}"
   router                             = google_compute_router.protected_subnet_router.name
@@ -112,6 +114,7 @@ resource "google_compute_router" "protected_subnet_router" {
   region  = var.region
   network = google_compute_network.protected_vpc_network.self_link
 }
+*/
 
 ### Internal Load Balancer ###
 
