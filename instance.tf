@@ -70,8 +70,7 @@ resource "google_compute_region_instance_group_manager" "fgts" {
   region                    = var.region
   distribution_policy_zones = data.google_compute_zones.get_zones.names
 
-  target_pools = ["${google_compute_target_pool.fgts.self_link}"]
-  target_size  = 2
+  target_size = 2
 
   auto_healing_policies {
     health_check      = google_compute_health_check.autohealing.self_link

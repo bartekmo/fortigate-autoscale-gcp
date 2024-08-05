@@ -112,32 +112,6 @@ resource "google_compute_router" "protected_subnet_router" {
   region  = var.region
   network = google_compute_network.protected_vpc_network.self_link
 }
-resource "google_compute_forwarding_rule" "elb" {
-  name   = "${var.cluster_name}-loadbalancer-rule-${random_string.random_name_post.result}"
-  region = var.region
-
-  load_balancing_scheme = "EXTERNAL"
-  target                = google_compute_target_pool.fgts.self_link
-}
-
-resource "google_compute_http_health_check" "elb" {
-  name                = "${var.cluster_name}-check-backend-${random_string.random_name_post.result}"
-  check_interval_sec  = 3
-  timeout_sec         = 2
-  unhealthy_threshold = 3
-  port                = "8008"
-}
-
-
-### Target Pools ###
-resource "google_compute_target_pool" "fgts" {
-  name             = "${var.cluster_name}-instancepool-${random_string.random_name_post.result}"
-  session_affinity = "CLIENT_IP"
-
-  health_checks = [
-    "${google_compute_http_health_check.elb.name}",
-  ]
-}
 
 ### Internal Load Balancer ###
 
