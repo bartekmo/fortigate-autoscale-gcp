@@ -1,12 +1,12 @@
 
 provider "google" {
-  credentials = file(var.auth_key)
+  credentials = fileexists(var.auth_key) ? file(var.auth_key) : null
   project     = var.project
   region      = var.region
   zone        = var.zone
 }
 provider "google-beta" {
-  credentials = file(var.auth_key)
+  credentials = fileexists(var.auth_key) ? file(var.auth_key) : null
   project     = var.project
   region      = var.region
   zone        = var.zone
