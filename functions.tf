@@ -64,17 +64,13 @@ resource "google_cloudfunctions_function" "function" {
 
   }
 }
-data "template_file" "setup_secondary_ip" {
-  template = file("${path.module}/assets/configset/baseconfig")
-  vars = {
-    fgt_secondary_ip   = "${google_compute_forwarding_rule.default.ip_address}",
-    fgt_internalslb_ip = "${google_compute_forwarding_rule.internal_load_balancer.ip_address}",
-  }
-}
+
 resource "local_file" "setup_secondary_ip_render" {
-  content    = data.template_file.setup_secondary_ip.rendered
+  content    = templatefile("${path.module}/assets/configset/baseconfig", {
+    fgt_secondary_ip   = google_compute_forwarding_rule.default.ip_address,
+    fgt_internalslb_ip = google_compute_forwarding_rule.internal_load_balancer.ip_address
+  })
   filename   = "${path.module}/assets/configset/baseconfig.rendered"
-  depends_on = [data.template_file.setup_secondary_ip]
 }
 
 
