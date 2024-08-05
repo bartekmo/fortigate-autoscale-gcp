@@ -37,16 +37,24 @@ config system interface
     next
 end
 config firewall vip
-    edit "lb-probe"
-        set extip "${fgt_secondary_ip}"
+    edit "elb-probe"
+        set extip "${elb_addr}"
         set extintf "port1"
         set portforward enable
         set mappedip "192.168.199.1"
         set extport 8008
         set mappedport 8008
     next
+    edit "ilb-probe"
+        set extip "${ilb_addr}"
+        set extintf "port2"
+        set portforward enable
+        set mappedip "192.168.199.1"
+        set extport 8008
+        set mappedport 8008
+    next
         edit "to-internal-loadbalancer-port80"
-        set extip "${fgt_secondary_ip}"
+        set extip "${elb_addr}"
         set extintf "port1"
         set portforward enable
         set mappedip "${fgt_internalslb_ip}"
@@ -54,7 +62,7 @@ config firewall vip
         set mappedport 80
     next
         edit "to-internal-loadbalancer-port443"
-        set extip "${fgt_secondary_ip}"
+        set extip "${elb_addr}"
         set extintf "port1"
         set portforward enable
         set mappedip "${fgt_internalslb_ip}"
@@ -71,10 +79,10 @@ end
 config firewall policy
     edit 2
         set name "DefaultGCPProbePolicy"
-        set srcintf "port1"
+        set srcintf "port1" "port2"
         set dstintf "loopback"
         set srcaddr "all"
-        set dstaddr "lb-probe"
+        set dstaddr "elb-probe" "ilb_probe"
         set action accept
         set schedule "always"
         set service "ProbeService-8008"
@@ -118,6 +126,16 @@ end
 config router static
     edit 1
         set dst 172.16.8.0 255.255.255.0
+        set gateway 172.16.8.1
+        set device "port2"
+    next
+    edit 2
+        set dst 35.191.0.0 255.255.0.0
+        set gateway 172.16.8.1
+        set device "port2"
+    next
+    edit 3
+        set dst 130.211.0.0 255.255.252.0
         set gateway 172.16.8.1
         set device "port2"
     next

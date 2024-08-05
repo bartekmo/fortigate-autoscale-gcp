@@ -66,11 +66,12 @@ resource "google_cloudfunctions_function" "function" {
 }
 
 resource "local_file" "setup_secondary_ip_render" {
-  content    = templatefile("${path.module}/assets/configset/baseconfig", {
-    fgt_secondary_ip   = google_compute_forwarding_rule.elb.ip_address,
+  content = templatefile("${path.module}/assets/configset/baseconfig", {
+    elb_addr           = google_compute_forwarding_rule.elb.ip_address,
+    ilb_addr           = google_compute_forwarding_rule.ilb.ip_address,
     fgt_internalslb_ip = google_compute_forwarding_rule.internal_load_balancer.ip_address
   })
-  filename   = "${path.module}/assets/configset/baseconfig.rendered"
+  filename = "${path.module}/assets/configset/baseconfig.rendered"
 }
 
 
