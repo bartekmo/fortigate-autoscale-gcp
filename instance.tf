@@ -1,6 +1,6 @@
 
 # Instance Template
-resource "google_compute_instance_template" "default" {
+resource "google_compute_instance_template" "fgt" {
   depends_on  = [google_cloudfunctions_function.function]
   name        = "${var.cluster_name}-instance-template-${random_string.random_name_post.result}"
   description = "Fortigate AutoScale Cluster"
@@ -64,13 +64,13 @@ resource "google_compute_health_check" "autohealing" {
   }
 }
 
-resource "google_compute_region_instance_group_manager" "appserver" {
+resource "google_compute_region_instance_group_manager" "fgts" {
   name                      = "${var.cluster_name}-fortigate-autoscale-${random_string.random_name_post.result}"
   base_instance_name        = "${var.cluster_name}-instance-${random_string.random_name_post.result}"
   region                    = var.region
   distribution_policy_zones = data.google_compute_zones.get_zones.names
 
-  target_pools = ["${google_compute_target_pool.default.self_link}"]
+  target_pools = ["${google_compute_target_pool.fgts.self_link}"]
   target_size  = 2
 
   auto_healing_policies {
@@ -79,18 +79,18 @@ resource "google_compute_region_instance_group_manager" "appserver" {
   }
   version {
     name              = "Default"
-    instance_template = google_compute_instance_template.default.self_link
+    instance_template = google_compute_instance_template.fgt.self_link
   }
 
 }
 ### Regional AutoScaler ###
-resource "google_compute_region_autoscaler" "default" {
+resource "google_compute_region_autoscaler" "fgts" {
   provider = google-beta
   project  = var.project
   #Name needs to be in lowercase
   name   = "${var.cluster_name}-autoscaler-${random_string.random_name_post.result}"
   region = var.region
-  target = google_compute_region_instance_group_manager.appserver.self_link
+  target = google_compute_region_instance_group_manager.fgts.self_link
 
   autoscaling_policy {
     max_replicas    = var.max_replicas

@@ -1,15 +1,15 @@
 output "InstanceTemplate" {
-  value = google_compute_instance_template.default.name
+  value = google_compute_instance_template.fgt.name
 }
 output "google_compute_region_instance_group_manager" {
-  value = google_compute_region_instance_group_manager.appserver.name
+  value = google_compute_region_instance_group_manager.fgts.name
 }
 
 output "Trigger_URL" {
   value = google_cloudfunctions_function.function.https_trigger_url
 }
 output "LoadBalancer_Ip_Address" {
-  value = google_compute_forwarding_rule.default.ip_address
+  value = google_compute_forwarding_rule.elb.ip_address
 }
 output "Note" {
   value = "The FireStore Database must be deleted separately"
