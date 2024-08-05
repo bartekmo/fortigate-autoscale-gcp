@@ -140,3 +140,9 @@ config router static
         set device "port2"
     next
 end
+
+config system ha
+    set session-pickup enable
+    set session-pickup-connectionless enable
+    set session-pickup-nat enable
+end
