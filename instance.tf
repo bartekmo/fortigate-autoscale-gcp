@@ -1,6 +1,6 @@
 
 # Instance Template
-resource "google_compute_instance_template" "fgt" {
+resource "google_compute_region_instance_template" "fgt" {
   depends_on  = [google_cloudfunctions_function.function]
   name        = "${var.cluster_name}-instance-template-${random_string.random_name_post.result}"
   description = "Fortigate AutoScale Cluster"
@@ -78,7 +78,7 @@ resource "google_compute_region_instance_group_manager" "fgts" {
   }
   version {
     name              = "Default"
-    instance_template = google_compute_instance_template.fgt.self_link
+    instance_template = google_compute_region_instance_template.fgt.self_link
   }
 
 }

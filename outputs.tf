@@ -1,5 +1,5 @@
 output "InstanceTemplate" {
-  value = google_compute_instance_template.fgt.name
+  value = google_compute_region_instance_template.fgt.name
 }
 output "google_compute_region_instance_group_manager" {
   value = google_compute_region_instance_group_manager.fgts.name
